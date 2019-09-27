@@ -1,7 +1,4 @@
 'use strict';
-//exec api
-// require('./dialogflowAPI.js');
-////
 const dialogflow = require('dialogflow');
 const config = require('./config');
 const express = require('express');
@@ -557,7 +554,6 @@ async function handleDialogFlowResponse(sender, response) {
         sendTextMessage(sender, responseText);
     }
 }
-
 async function sendToDialogFlow(sender, textString, params) {
     let textToDialogFlow = textString;
     sendTypingOn(sender);
