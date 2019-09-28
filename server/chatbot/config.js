@@ -1,19 +1,19 @@
 module.exports = {
-    FB_PAGE_TOKEN: 'EAAfIgqugty0BADlpGDXJCT5wUUxH2Fbm8Rf8ynY5uwlIMyeTw12wQT4NYxpGqUftuOCCfyAHFMz6SBZAUQJst8vERdZCwnG6eEGxl6JeRc4vHct2foZCoo0MUEQmfALS1dEG8cmkS5yHxrdkVB8cZBXe7TO0VK6qV59RUkPJs9rMJtAdFZAlX',
-    FB_VERIFY_TOKEN: 'charlytoken',
-    FB_APP_SECRET: 'edace8cf58863932b7f100f8380c5c1c',
-    SERVER_URL: 'https://charlybotheroku.herokuapp.com/',
-    GOOGLE_PROJECT_ID: 'charlybot-vicdfw',
+    FB_PAGE_TOKEN: 'EAAQUAfZBRNu8BAOuKfhkwuN44CCVZAK8tpqWGCGcLa3mWYU2aeBq97JWZB8AnaaEZCPhmHvkuyNQbHA446NTbqLamrpVUh8yjrlI86xB2jD7zYMe8gu9yyxvtAxA6E0oc1dKjTyZASOaqwFCESJWCsYZCDPfhF1QFaFXHlDTWR7I3GR1y4uCSM56zGqZCRiWhEZD',
+    FB_VERIFY_TOKEN: 'CajaTacna.2017',
+    FB_APP_SECRET: '41c60871ac281ec2e3918f118bf8bbf1',
+    SERVER_URL: 'https://botcertificacion.herokuapp.com/',
+    GOOGLE_PROJECT_ID: 'newagent-xouosp',
     DF_LANGUAGE_CODE: 'es',
-    GOOGLE_CLIENT_EMAIL: 'charlybot@charlybot-vicdfw.iam.gserviceaccount.com',
-    GOOGLE_PRIVATE_KEY: '-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDHvZeSAaKyUqdT\nIzq+ri2cvbE6AcooOaOGhhjWdi3PJmGg4nlHEyfKWoDvUVMm5i9Y36kBq9PWUOGB\nt6QNvqzT1eXt6TbCQ4v3DAv7lU95rIXf4+QR6pt+/DifM37Dp+QT7RbO1aaXTFqj\n7g5Ba3LcKJwI1dTpuv3ku3pAeOqrymt3uy0jJZa+HknRVpBjBu4hKg8hkCcj5bC3\n9v0WCgAMGODJRaEQPWNzZGz1XUcMUFW1eXPCYDy0beuJA7T6NCqnWJk84mL+Zh/0\nyKVpfwT+hHsQ/gxOMFw4overi6JjtzDZq0PuYK8WcFBLPMbrbJyjPbKKGPqEd3nC\n1+eI1tIdAgMBAAECggEAAqgpNLo8V4plauPwU1p+RVQ5oAenkH7px6+Pc4TZaaS9\nTjZM/i7JS/YFuok2pbEQpqo89YZ7WCG1yjOu5Tbo1h2FhDNitNVQro3Ut/k9uCTd\nGAQQQ9O+00LYHvgAouogDMrNz50EbQVJPF59ho2/FqIcpzpu7Vf9KhZ7UxG4r2XJ\nIFH9/9yg6/MLpCibqcS3mB4zyR3vi9uMq/gfbBH6XJ5EeGciOpkOGnxvMzuD/tSj\nahhiwDmF4dT/SNxF8esAuadTXW1WGV9hvQPOr7vdI3jsArHTgJ7MqQI6J7ejllsi\nyA5h2Z4DaHQjsCrfVjxWPT6rsuHutm+EmMl8/cRhsQKBgQDrnGIQHUNjoSHpN1zW\nMZAoOxWCAp4LV8is8beXvreFkNAQq3C1Sv0as6/QB5igTJfi3GlhrRlBZVDaqm8F\nAjj5h9Z4zwmDpHGKUSzuYTKzG+KN6qWD1ZO+D8k9krB9aU2XctY5NAAcs96ofbcs\n8E7THVKCVeeH3CmEeKWifzrb8QKBgQDZBo4ZUlhQwA0pszsLy03+jPCt6tRBAZrp\n7Tfdr5jUm4yfdyXcEKOOaHoLz4fxdSoY6y6ChfaPbkbzsR6ecIt8G5ozlvljSosz\nXbQHoW2dVMajoGkRL8SxmP02QlKmHhmuyFp3KbcfDxThfaDDk2cQMsPtdBl8iKsK\nH6ntvrB07QKBgQCnam+j06dW2+Akv1oQORed/p3By+pRVQcbHIbAJJxzI/s0XR2x\nNJ+0oYmD4GHrRYGHiea3qTAQ79UMC57niDTD2mnjXfn8uJSVHCk5GYfVDTNmdB04\nGELrAnyUa+9Mrc6cltTxwKlzu7uzLeFC5V6dVHCUfEYQm7hEkRXg6VcBgQKBgBb3\nGZxWWWAaIopyG+Jwng08rs9IlTNXzyPH5WyBA2QkHapWOlxiKlyMc7XCPTlw04aV\nhHNtZ5zf54QsDvhnImt8pEGnTTaTkc1asg1IqMfIS8jO1a9q5Z6BePH/7K0FbGRR\ncTlA4c7YkrYVzChF9dcB+DetXHEQKUFF/n5Y+mU1AoGARm3EjB1scZ79zit0PDqP\nCm8Yj5eimUAF5Dpku/dQwQaKeiNsAR7cbOB2zlkwVzXdIQOsvgvLBJzX4umUU1x3\nSA8mbaG8vouiSvIBgbwslJlYSC0nGMXSsGD+IHBkXYgzELNcLEXnr47tZMH7lYrO\nHW/dBPbhcDGJ2eM7pCtOIBo=\n-----END PRIVATE KEY-----\n',
-    KEYFILENAME: __dirname + '/charlybot-vicdfw-d92008686a10.json', //credenciales
+    GOOGLE_CLIENT_EMAIL: 'charlybot@newagent-xouosp.iam.gserviceaccount.com',
+    GOOGLE_PRIVATE_KEY: '-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDXq2VczJTS1gs/\ncBkKLsm9fMMbyODtYUjjaVEF0XXhMfFRxc30S93V5RAU7mjGutYVLYfE5D7s4rrX\nwpJI5+YzOHkkeJNS3t62/SSWcpcyODWsopEJP0WYnDq8Aj9OaqacSLLlOxozLg4u\nnEsYQsN7xVlplEgu8xuDwxsEls+jO5yN/dS1JzSiQET/9tfpYeLnydOznEgTcO7y\nQ1AN6LP6MZ/tjgBKhDVTXf11AotGpk7cwwAzFAuOx7WaJncgLzAeW9qe2vRm5UpR\nnL9SNej1ATZnTCqIa1X9/k26brXr3gC4Mk3kB+cWV2LAPbLjKutwP6nYlIWyZ9HQ\n11SSPIGZAgMBAAECggEAG2XJJyxQHaaWYDU34RzHgRxn1tBCjrVkoosfAVu2G2kS\nTH6R5t56bHFAhUAyLEjQ6HjTvhX2znYRIVa06bEYA9rBPPpaUNVCOsHW04v0HCua\n2fb+8MtKZpQ2O+sXKrmOt9zeaROEhQrtP0uYmJjmp4MPFEQDlX9JuAfhl0gnUYeF\n7KZlm9T7auTlA4qQjICi6pfj0/orK7912r1f37GnA7/aHAeznsk09csCf0e8gtEC\nDVcHSk6tY2Kv81O8PPglCSAysmZ9BMZHeFNON/vRYNJJy0AIxqdNbtDepcyYUB+n\nTqX8vxhw428ZTf7TGB2JvQOCWCQ2aj5QNoFjb9R12QKBgQDs4ftvVbRmdOqk8wm6\n6TGKRooC+/9U2k2BeVhlEFgYWYVBnmij6wWcU7yuobsSl/GDyyaqSP0Khi1FXQ3G\nddjFdsWRK20DjUpvuYIqcW+uT0WRfydEMh3pnGx3pjqv/KXr9rRQ/JPoLoDrbBaQ\n2Z9N3laurYzjIUltJmkpamWnVQKBgQDpEyWMpcS2eTaSVqTxXbDJcMeS+j7+BMTb\nMZK6AWB+rjjpHQQCT1NvGmnQBfYpkFtBqBflZNM6OYHQSEx4IJIZn3o/1r4i7pEF\np5+hdfeGGdXyQSbxmc8qa8y8pPYrFniYKtgdvcxGvSierzY2aQgy/h+MpuJ5JkJe\n69h0NVNpNQKBgQCQGjkW1ZBU87L6fU7iAZI9iAPVJO+C8vpLVUJM2NB+n5bNAEyv\nyv0yyE3z/jcLbJtjjWYMGTK2AEHx/FWw8WfZWBN/6Gb8zisGJFfm8fL6mwa7KBr/\nBW3k+1+QufLhtFRLY1z2F3Dywbdzf+GKZJjgie05fiJC2bENUVyP8UW9sQKBgDo8\nXXp6BN+vA7Km0Ym5Zi2+7y7LNigUGvfFuCqfo3OjpnagmFrXZTpyeBPRGYOjHRoX\nnPjlK1319niLSAgP41FhppMC3fkucK/gBSO7rQAlvm5MVyWwz7GCw+IyuYtkjvc+\nZUdxH/Rg2SBlGP+ZWMIc+tcS761joNvExA2tMU0tAoGADxedRMdD4orwhndRIOjv\nmBh3BgzVsGIIYvpGz0KVAvc94dbkSvCAVPYgcbP9KkZucaHFQRz5lnm6DN09/kaF\nnRP80kLDCYtXoanIHcHlNOZ8LfZINP1ddYIr9ig9Up5TsM+iuKlSWxEGshtgnhgm\nBVEFEycs80/yyeXx3YBpQWM=\n-----END PRIVATE KEY-----\n',
+    KEYFILENAME: __dirname + '/newagent-xouosp-b8ae8d516e4d.json', //credenciales
     //database
     PG_CONFIG: {
-        user: 'hziujvpxvvvjqn',
-        database: 'd5tgpc9oeaq7e5',
-        password: '9ae694032bb7bd031bc45c69cea694872f3dd4549a368e25e88c67e04a36779f',
-        host: 'ec2-174-129-226-232.compute-1.amazonaws.com',
+        user: 'wwvuhnknbmkper',
+        database: 'dbvkd6arsvm0oj',
+        password: '860dcbaa12bf159c077c1f285b57fb8155f7ea9ad2c0c47f9e3d822f8390e2d3',
+        host: 'ec2-54-83-33-14.compute-1.amazonaws.com',
         port: 5432,
         max: 10,
         idleTimeoutMillis: 30000,
