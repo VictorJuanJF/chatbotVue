@@ -184,6 +184,7 @@ const updateDocumentNum = (documentNum, userId) => {
             if (err) {
                 return console.error('Error acquiring client', err.stack);
             }
+            console.log("el dni a guardar en la bd es:", documentNum);
             client
                 .query(
                     `update chatbot_usuarios set num_documento=${documentNum} where fb_id='${userId}'`,
