@@ -383,15 +383,15 @@ async function handleDialogFlowAction(sender, action, messages, contexts, parame
         case 'UsuarioDNI.UsuarioDNI-yes':
             // let dni = parameters.fields.dni;
             console.log("los parametros del intent son: ", contexts[0].parameters);
-            console.log("el DNI a guardar es: ", contexts[0].parameters.fields.dni['dni.original'].stringValue);
-            let dni = contexts[0].parameters.fields.dni.numberValue;
-            if (dni.toString().length != 8) {
+            console.log("el DNI a guardar es: ", contexts[0].parameters.fields.dni['dni.original']);
+            let dni = contexts[0].parameters.fields.dni['dni.original'].stringValue;
+            if (dni.length != 8) {
                 sendTextMessage(sender, "El DNI debe contener 8 dígitos");
                 setTimeout(() => {
                     sendToDialogFlow(sender, "Usuario.DNI.action");
                 }, 1000);
             } else {
-                await userService.updateDocumentNum(dni.toString(), sender);
+                await userService.updateDocumentNum(dni, sender);
                 handleMessages(messages, sender);
                 setTimeout(() => {
                     sendToDialogFlow(sender, "welcome_intent");
