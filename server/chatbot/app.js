@@ -384,13 +384,13 @@ async function handleDialogFlowAction(sender, action, messages, contexts, parame
             // let dni = parameters.fields.dni;
             console.log("el DNI a guardar es: ", contexts[0].parameters.fields.dni.stringValue);
             let dni = contexts[0].parameters.fields.dni.stringValue;
-            if (dni.toString().length != 8) {
+            if (dni.length != 8) {
                 sendTextMessage(sender, "El DNI debe contener 8 dígitos");
                 setTimeout(() => {
                     sendToDialogFlow(sender, "Usuario.DNI.action");
                 }, 1000);
             } else {
-                await userService.updateDocumentNum(dni.toString(), sender);
+                await userService.updateDocumentNum(dni, sender);
                 handleMessages(messages, sender);
                 setTimeout(() => {
                     sendToDialogFlow(sender, "welcome_intent");
