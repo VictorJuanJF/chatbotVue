@@ -383,8 +383,8 @@ async function handleDialogFlowAction(sender, action, messages, contexts, parame
         case 'UsuarioDNI.UsuarioDNI-yes':
             // let dni = parameters.fields.dni;
             console.log("los parametros del intent son: ", contexts[0].parameters);
-            console.log("el DNI a guardar es: ", contexts[0].parameters.fields.dni['dni.original']);
-            let dni = contexts[0].parameters.fields.dni['dni.original'].stringValue;
+            console.log("el DNI a guardar es: ", contexts[0].parameters.fields['dni.original']);
+            let dni = contexts[0].parameters.fields['dni.original'].stringValue;
             if (dni.length != 8) {
                 sendTextMessage(sender, "El DNI debe contener 8 dígitos");
                 setTimeout(() => {
