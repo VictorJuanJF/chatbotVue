@@ -1,146 +1,111 @@
-'use strict';
-const config = require('../chatbot/config.js');
-const pg = require('pg');
+"use strict";
+const pg = require("pg");
+const db = require(".");
 pg.defaults.ssl = true;
 
-const getAgency = (callback, agencyName) => {
-    var pool = new pg.Pool(config.PG_CONFIG);
-    pool.connect(function (err, client, done) {
+const getAgency = (agencyName) => {
+  return new Promise((resolve, reject) => {
+    db.query(
+      "select * from agencias inner join regiones on agencias.region=regions.id where nombre=$1",
+      [agencyName],
+      (err, res) => {
         if (err) {
-            return console.error('Error acquiring client', err.stack);
+          console.log(err);
+          return reject(err);
         }
-        client
-            .query(
-                `select * from agencias inner join regiones on agencias.region=regions.id where nombre='${agencyName}'`,
-                function (err, result) {
-                    if (err) {
-                        console.log(err);
-                        callback(null);
-                    } else {
-                        callback(result.rows[0]);
-                    };
-                    done();
-                });
-
-    });
-    //pool.end();
-}
-const listAgencies = (callback) => {
-    var pool = new pg.Pool(config.PG_CONFIG);
-    pool.connect(function (err, client, done) {
+        resolve(res.rows[0]);
+      }
+    );
+  });
+};
+const listAgencies = () => {
+  return new Promise((resolve, reject) => {
+    db.query(
+      "select agencias.id as agency_id,agencias.nombre as agency_name,region,horario as schedule,direccion as address,referencia as reference,regiones.nombre as name,sinonimos as synonyms from agencias inner join regiones on agencias.region=regiones.id where agencias.estado='1' ORDER BY regiones.nombre ASC",
+      (err, res) => {
         if (err) {
-            return console.error('Error acquiring client', err.stack);
+          console.log(err);
+          return reject(err);
         }
-        client
-            .query(
-                `select agencias.id as agency_id,agencias.nombre as agency_name,region,horario as schedule,direccion as address,referencia as reference,regiones.nombre as name,sinonimos as synonyms from agencias inner join regiones on agencias.region=regiones.id where agencias.estado='1' ORDER BY regiones.nombre ASC`,
-                function (err, result) {
-                    if (err) {
-                        console.log(err);
-                        callback(err);
-                    } else {
-                        callback(null, result.rows);
-                    };
-                    done();
-                });
+        resolve(res.rows);
+      }
+    );
+  });
+};
 
-    });
-}
-const createAgency = (agency, callback) => {
-    var pool = new pg.Pool(config.PG_CONFIG);
-    pool.connect(function (err, client, done) {
+const createAgency = (agency) => {
+  return new Promise((resolve, reject) => {
+    db.query(
+      "insert into agencias (nombre,region,horario,direccion,referencia,sinonimos,estado) values($1,$2,$3,$4,$5,$6,$7);",
+      [
+        agency.agency_name,
+        agency.region,
+        agency.schedule,
+        agency.address,
+        agency.reference,
+        agency.synonyms,
+        agency.status,
+      ],
+      (err, res) => {
         if (err) {
-            return console.error('Error acquiring client', err.stack);
+          console.log(err);
+          return reject(err);
         }
-        client
-            .query(
-                `insert into agencias (nombre,region,horario,direccion,referencia,sinonimos,estado) values('${agency.agency_name}',${agency.region},'${agency.schedule}','${agency.address}','${agency.reference}','${agency.synonyms}','${agency.status}');`,
-                function (err, result) {
-                    if (err) {
-                        console.log(err);
-                        callback(err);
-                    } else {
-                        callback(null, true);
-                    };
-                    done();
-                });
-
-    });
-}
-const updateAgency = (id, agency, callback) => {
-    var pool = new pg.Pool(config.PG_CONFIG);
-    pool.connect(function (err, client, done) {
+        resolve(true);
+      }
+    );
+  });
+};
+const updateAgency = (id, agency) => {
+  return new Promise((resolve, reject) => {
+    db.query(
+      `update agencias set direccion='${agency.address}',nombre='${agency.agency_name}',referencia='${agency.reference}',region='${agency.region}',horario='${agency.schedule}',sinonimos='${agency.synonyms}' where id='${id}'`,
+      (err, res) => {
         if (err) {
-            return console.error('Error acquiring client', err.stack);
+          console.log(err);
+          return reject(err);
         }
-        client
-            .query(
-                `update agencias set direccion='${agency.address}',nombre='${agency.agency_name}',referencia='${agency.reference}',region='${agency.region}',horario='${agency.schedule}',sinonimos='${agency.synonyms}' where id='${id}'`,
-                function (err, result) {
-                    if (err) {
-                        console.log(err);
-                        callback(err);
-                    } else {
-                        callback(null, agency);
-                    };
-                    done();
-                });
-    });
-}
+        resolve(true);
+      }
+    );
+  });
+};
 
-const deleteAgency = (id, callback) => {
-    console.log("se eliminara el id: ", id);
-    var pool = new pg.Pool(config.PG_CONFIG);
-    pool.connect(function (err, client, done) {
+const deleteAgency = (id) => {
+  return new Promise((resolve, reject) => {
+    db.query(`update agencias set estado='0' where id='${id}'`, (err, res) => {
+      if (err) {
+        console.log(err);
+        return reject(err);
+      }
+      resolve(true);
+    });
+  });
+};
+
+const listAgenciesByRegion = (region) => {
+  return new Promise((resolve, reject) => {
+    db.query(
+      `select agencias.nombre as agency_name,direccion as address from agencias inner join regiones on agencias.region=regiones.id where regiones.nombre='${region}'`,
+      (err, res) => {
         if (err) {
-            return console.error('Error acquiring client', err.stack);
+          console.log(err);
+          return reject(err);
         }
-        client
-            .query(
-                `update agencias set estado='0' where id='${id}'`,
-                function (err, result) {
-                    if (err) {
-                        console.log(err);
-                        callback(err);
-                    } else {
-                        callback(null, true);
-                    };
-                    done();
-                });
-    });
-    //pool.end();
-}
-
-const listAgenciesByRegion = (region, callback) => {
-    var pool = new pg.Pool(config.PG_CONFIG);
-    pool.connect(function (err, client, done) {
-        if (err) {
-            return console.error('Error acquiring client', err.stack);
-        }
-        client
-            .query(
-                `select agencias.nombre as agency_name,direccion as address from agencias inner join regiones on agencias.region=regiones.id where regiones.nombre='${region}'`,
-                function (err, result) {
-                    if (err) {
-                        console.log(err);
-                        callback(err);
-                    } else {
-                        callback(null, result.rows);
-                    };
-                    done();
-                });
-
-    });
-}
+        resolve(res.rows);
+      }
+    );
+  });
+};
 
 module.exports = {
-    getAgency,
-    listAgencies,
-    createAgency,
-    listAgenciesByRegion,
-    deleteAgency,
-    updateAgency
-}
+  getAgency,
+  listAgencies,
+  createAgency,
+  listAgenciesByRegion,
+  deleteAgency,
+  updateAgency,
+};
 
 // listAgencies((err, response) => {
 //     console.log("la respuesta es: ", response);

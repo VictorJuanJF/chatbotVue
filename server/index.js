@@ -1,3 +1,5 @@
+require("dotenv").config();
+
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
@@ -11,7 +13,7 @@ const app = express();
 // parse application/x-www-form-urlencoded
 app.use(
   bodyParser.urlencoded({
-    extended: false
+    extended: false,
   })
 );
 //2020
@@ -19,7 +21,7 @@ app.use(
 app.use(bodyParser.json());
 // app.use(cors());
 // CORS middleware
-const allowCrossDomain = function(req, res, next) {
+const allowCrossDomain = function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Methods", "*");
   res.header("Access-Control-Allow-Headers", "*");
@@ -41,7 +43,7 @@ if (process.env.NODE_ENV === "production") {
     res.sendFile(__dirname + "/public/index.html");
   });
 }
-process.env.PORT = process.env.PORT || 8000;
+process.env.PORT = process.env.PORT || 3000;
 app.listen(process.env.PORT, () => {
   console.log(`Server starting on port ${process.env.PORT}`);
 });

@@ -1,8 +1,8 @@
 module.exports = {
   FB_PAGE_TOKEN:
-    "EAAFeWyKYN50BAKQwT7yOCkyaoozizi2ElFM5bCineKGUj8WuzByGE0Pry22OqJegpHgtsHb5Sb7D7NdvFZB15m0MiZC2tVRVyI8Lvv6tSRZCeSH9Nhh6LWfutwpkXaUevkW6x7xQvnOx9Q2PXHq3Hvsv9BSALqsZCzUSrgwBCh6FgJ3ggWNp",
+    "EAALJhOr7qh4BAJZCQ3RHoBZAgSlueEc4VU45GF3zSgIBhQY17FLhsx9IzFDX0O9VI7wvEO8FfLOs0fAs0Q1GP1LIMcosbRmmrQYMIzaocZBjTUImsyNerZA4S8smfxvRCD3nPV1Sg3VzSnFhQA4cP2SXBZBUyE8GLvxLMethA4gZDZD",
   FB_VERIFY_TOKEN: "CajaTacna.2017",
-  FB_APP_SECRET: "7ce7ec62e32b0ed04c03b48df5a38686",
+  FB_APP_SECRET: "21183e0b6e47ca1e3a24daa1713ce771",
   SERVER_URL: "https://botcertificacion.herokuapp.com/",
   GOOGLE_PROJECT_ID: "newagent-xouosp",
   DF_LANGUAGE_CODE: "es",
@@ -19,9 +19,9 @@ module.exports = {
     host: "ec2-54-83-33-14.compute-1.amazonaws.com",
     port: 5432,
     max: 10,
-    idleTimeoutMillis: 30000
+    idleTimeoutMillis: 30000,
   },
   // jwt
   SEED: "mySecredSeed",
-  CADUCIDAD: 1 * 60 //one minute
+  CADUCIDAD: 1 * 60, //one minute
 };

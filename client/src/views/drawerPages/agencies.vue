@@ -102,16 +102,16 @@ export default {
         {
           text: "Nombre",
           align: "left",
-          value: "agency_name"
+          value: "agency_name",
         },
         { text: "Región", value: "name" },
         { text: "Dirección", value: "address" },
         { text: "Referencia", value: "reference" },
         {
           text: "horario",
-          value: "schedule"
+          value: "schedule",
         },
-        { text: "Acciones", value: "action", sortable: false }
+        { text: "Acciones", value: "action", sortable: false },
       ],
       agencies: [],
       editedIndex: -1,
@@ -122,7 +122,7 @@ export default {
         reference: "",
         region: "",
         schedule: "",
-        synonyms: []
+        synonyms: [],
       },
       defaultItem: {
         agency_id: 0,
@@ -131,8 +131,8 @@ export default {
         reference: "",
         region: "",
         schedule: "",
-        synonyms: []
-      }
+        synonyms: [],
+      },
     };
   },
   beforeMount() {
@@ -141,7 +141,7 @@ export default {
   computed: {
     formTitle() {
       return this.editedIndex === -1 ? "Nueva agencia" : "Editar agencia";
-    }
+    },
   },
   methods: {
     addSynonym(synonym) {
@@ -151,25 +151,25 @@ export default {
     getInitialData() {
       axios
         .get("/api/chatbot/agent/agencies/list")
-        .then(res => {
+        .then((res) => {
           if (res.data.ok) {
             console.log(res.data.payload);
             this.agencies = res.data.payload;
             this.getRegions();
           }
         })
-        .catch(err => {
+        .catch((err) => {
           console.error(err);
         });
     },
     getRegions() {
       axios
         .get("/api/regions/list")
-        .then(res => {
-          console.log(res.data);
+        .then((res) => {
+          console.log("las regiones: ", res.data);
           this.regions = res.data.payload;
         })
-        .catch(err => {
+        .catch((err) => {
           console.error(err);
         });
     },
@@ -193,18 +193,18 @@ export default {
       if (confirm("¿Seguro que deseas eliminar esta agencia?")) {
         axios
           .post("/api/chatbot/agent/agencies/delete", {
-            id: item.agency_id
+            id: item.agency_id,
           })
-          .then(res => {
+          .then((res) => {
             if (res.data.ok) {
               this.$store.dispatch("showSnackbar", {
                 text: res.data.message,
-                color: "success"
+                color: "success",
               });
               this.agencies.splice(index, 1);
             }
           })
-          .catch(err => {
+          .catch((err) => {
             console.error(err);
           });
       }
@@ -229,19 +229,19 @@ export default {
             reference: this.editedItem.reference,
             region: this.editedItem.region,
             schedule: this.editedItem.schedule,
-            synonyms: this.editedItem.synonyms
+            synonyms: this.editedItem.synonyms,
           })
-          .then(res => {
+          .then((res) => {
             if (res.data.ok) {
               this.$store.dispatch("showSnackbar", {
                 text: res.data.message,
-                color: "success"
+                color: "success",
               });
               this.close();
               Object.assign(this.agencies[this.editedIndex], this.editedItem);
             }
           })
-          .catch(err => {
+          .catch((err) => {
             console.error(err);
           });
       } else {
@@ -254,25 +254,25 @@ export default {
               region: this.editedItem.region,
               schedule: this.editedItem.schedule,
               status: 1,
-              synonyms: this.editedItem.synonyms.join(",")
-            }
+              synonyms: this.editedItem.synonyms.join(","),
+            },
           })
-          .then(res => {
+          .then((res) => {
             if (res.data.ok) {
               this.$store.dispatch("showSnackbar", {
                 text: res.data.message,
-                color: "success"
+                color: "success",
               });
               this.close();
               this.agencies.push(this.editedItem);
             }
           })
-          .catch(err => {
+          .catch((err) => {
             console.error(err);
           });
       }
-    }
-  }
+    },
+  },
 };
 </script>
 </script>

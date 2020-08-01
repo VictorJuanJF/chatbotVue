@@ -1,150 +1,106 @@
-'use strict';
-const request = require('request');
-const config = require('../chatbot/config.js');
-const pg = require('pg');
+"use strict";
+const pg = require("pg");
+const db = require(".");
 pg.defaults.ssl = true;
 //bcrypt options
-const bcrypt = require('bcrypt');
+const bcrypt = require("bcrypt");
 const saltRounds = 10;
 
-const login = (user, callback) => {
-    var pool = new pg.Pool(config.PG_CONFIG);
-    pool.connect(function (err, client, done) {
+const login = (user) => {
+  return new Promise((resolve, reject) => {
+    db.query(
+      `select id,nombres as first_name,apellidos as first_name,correo as email,contrasena as password,rol as role,estado as status from sistema_usuarios where correo='${user.email}'`,
+      (err, res) => {
         if (err) {
-            return console.error('Error acquiring client', err.stack);
+          console.log(err);
+          return reject(err);
         }
-        client
-            .query(
-                `select id,nombres as first_name,apellidos as first_name,correo as email,contrasena as password,rol as role,estado as status from sistema_usuarios where correo='${user.email}'`,
-                function (err, result) {
-                    if (err) {
-                        console.log(err);
-                        callback(err);
-                    } else {
-                        callback(null, result.rows[0]);
-                    };
-                    done();
-                });
-    });
-    //pool.end();
-}
+        resolve(res.rows[0]);
+      }
+    );
+  });
+};
 
-const registerUser = (user, callback) => {
-    var pool = new pg.Pool(config.PG_CONFIG);
-    pool.connect(function (err, client, done) {
-        if (err) {
-            return console.error('Error acquiring client', err.stack);
+const registerUser = (user) => {
+  return new Promise((resolve, reject) => {
+    bcrypt.hash(user.password, saltRounds).then(function (hash) {
+      db.query(
+        `insert into sistema_usuarios(nombres,apellidos,correo,contrasena,rol,estado) values('${user.first_name}','${user.last_name}','${user.email}','${hash}','${user.role}','${user.status}')`,
+        (err, res) => {
+          if (err) {
+            console.log(err);
+            return reject(err);
+          }
+          resolve(user);
         }
-        bcrypt.hash(user.password, saltRounds).then(function (hash) {
-            client
-                .query(
-                    `insert into sistema_usuarios(nombres,apellidos,correo,contrasena,rol,estado) values('${user.first_name}','${user.last_name}','${user.email}','${hash}','${user.role}','${user.status}')`,
-                    function (err, result) {
-                        if (err) {
-                            console.log(err);
-                            callback(err);
-                        } else {
-                            callback(null, user);
-                        };
-                        done();
-                    });
-        });
+      );
     });
-    //pool.end();
-}
-const list = (callback) => {
-    var pool = new pg.Pool(config.PG_CONFIG);
-    pool.connect(function (err, client, done) {
+  });
+};
+const list = () => {
+  return new Promise((resolve, reject) => {
+    db.query(
+      `select id,nombres as first_name,apellidos as last_name,correo as email,rol as role,estado as status from sistema_usuarios`,
+      (err, res) => {
         if (err) {
-            return console.error('Error acquiring client', err.stack);
+          console.log(err);
+          return reject(err);
         }
-        client
-            .query(
-                `select id,nombres as first_name,apellidos as last_name,correo as email,rol as role,estado as status from sistema_usuarios`,
-                function (errQuery, result) {
-                    if (errQuery) {
-                        console.log(err);
-                        callback(err);
-                    } else {
-                        callback(null, result.rows);
-                    };
-                    done();
-                });
+        resolve(res.rows);
+      }
+    );
+  });
+};
+const updatePassword = (email, newPassword) => {
+  return new Promise((resolve, reject) => {
+    bcrypt.hash(newPassword, saltRounds).then(function (hash) {
+      db.query(
+        `update sistema_usuarios set contrasena='${hash}' where correo='${email}'`,
+        (err, res) => {
+          if (err) {
+            console.log(err);
+            return reject(err);
+          }
+          resolve(true);
+        }
+      );
     });
-    //pool.end();
-}
-const updatePassword = (email, newPassword, callback) => {
-    var pool = new pg.Pool(config.PG_CONFIG);
-    console.log("se actualizara: ", email, newPassword);
-    pool.connect(function (err, client, done) {
+  });
+};
+const deleteUser = (email) => {
+  return new Promise((resolve, reject) => {
+    db.query(
+      `update sistema_usuarios set estado='0' where correo='${email}'`,
+      (err, res) => {
         if (err) {
-            return console.error('Error acquiring client', err.stack);
+          console.log(err);
+          return reject(err);
         }
-        bcrypt.hash(newPassword, saltRounds).then(function (hash) {
-            client
-                .query(
-                    `update sistema_usuarios set contrasena='${hash}' where correo='${email}'`,
-                    function (err, result) {
-                        if (err) {
-                            console.log(err);
-                            callback(err);
-                        } else {
-                            callback(null, true);
-                        };
-                        done();
-                    });
-        });
-    });
-    //pool.end();
-}
-const deleteUser = (email, callback) => {
-    var pool = new pg.Pool(config.PG_CONFIG);
-    pool.connect(function (err, client, done) {
+        resolve(true);
+      }
+    );
+  });
+};
+const updateUser = (user) => {
+  return new Promise((resolve, reject) => {
+    db.query(
+      `update sistema_usuarios set nombres='${user.first_name}',apellidos='${user.last_name}',correo='${user.email}',rol='${user.role}',estado='${user.status}' where correo='${user.email}'`,
+      (err, res) => {
         if (err) {
-            return console.error('Error acquiring client', err.stack);
+          console.log(err);
+          return reject(err);
         }
-        client
-            .query(
-                `update sistema_usuarios set estado='0' where correo='${email}'`,
-                function (err, result) {
-                    if (err) {
-                        console.log(err);
-                        callback(err);
-                    } else {
-                        callback(null, true);
-                    };
-                    done();
-                });
-    });
-    //pool.end();
-}
-const updateUser = (user, callback) => {
-    var pool = new pg.Pool(config.PG_CONFIG);
-    pool.connect(function (err, client, done) {
-        if (err) {
-            return console.error('Error acquiring client', err.stack);
-        }
-        client
-            .query(
-                `update sistema_usuarios set nombres='${user.first_name}',apellidos='${user.last_name}',correo='${user.email}',rol='${user.role}',estado='${user.status}' where correo='${user.email}'`,
-                function (err, result) {
-                    if (err) {
-                        console.log(err);
-                        callback(err);
-                    } else {
-                        callback(null, user);
-                    };
-                    done();
-                });
-    });
-    //pool.end();
-}
+        resolve(user);
+      }
+    );
+  });
+};
 
 module.exports = {
-    registerUser,
-    login,
-    list,
-    updatePassword,
-    deleteUser,
-    updateUser
-}
+  registerUser,
+  login,
+  list,
+  updatePassword,
+  deleteUser,
+  updateUser,
+};

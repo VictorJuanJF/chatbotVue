@@ -1,30 +1,23 @@
-'use strict';
-const config = require('../chatbot/config.js');
-const pg = require('pg');
+"use strict";
+const pg = require("pg");
+const db = require(".");
 pg.defaults.ssl = true;
 
-const listRegions = (callback) => {
-    var pool = new pg.Pool(config.PG_CONFIG);
-    pool.connect(function (err, client, done) {
+const listRegions = () => {
+  return new Promise((resolve, reject) => {
+    db.query(
+      "select id,nombre as name from regiones ORDER BY nombre ASC; ",
+      (err, res) => {
         if (err) {
-            return console.error('Error acquiring client', err.stack);
+          console.log(err);
+          return reject(err);
         }
-        client
-            .query(
-                `select id,nombre as name from regiones ORDER BY "nombre" ASC; `,
-                function (err, result) {
-                    if (err) {
-                        console.log(err);
-                        callback(err);
-                    } else {
-                        callback(null, result.rows);
-                    };
-                    done();
-                });
-
-    });
-}
+        resolve(res.rows);
+      }
+    );
+  });
+};
 
 module.exports = {
-    listRegions
-}
+  listRegions,
+};
