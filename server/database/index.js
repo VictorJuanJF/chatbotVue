@@ -1,5 +1,4 @@
 const { Pool } = require("pg");
-const config = require("../chatbot/config");
 const pool = new Pool({ ssl: true });
 
 module.exports = {

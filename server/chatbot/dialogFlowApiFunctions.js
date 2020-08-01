@@ -16,7 +16,6 @@ let credentialsPath = __dirname + "/credencialesJSON/";
 fs.readdirSync("./server/chatbot/credencialesJSON").forEach((file) => {
   credentialsPath = credentialsPath + file;
 });
-console.log("las credenciales bruses: ", credentialsPath);
 // Instantiates clients
 const intentsClient = new dialogflow.IntentsClient({
   projectId: process.env.GOOGLE_PROJECT_ID,
