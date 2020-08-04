@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <h1>Usuarios de Charly Bot</h1>
+    <h1>Usuarios de Petro Bot</h1>
     <v-data-table
       :headers="headers"
       :items="users"

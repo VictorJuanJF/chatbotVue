@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <strong>Rich message de tipo: generic</strong>
-    {{elements}}
+    <!-- {{elements}} -->
     <br />
     <v-dialog v-model="dialog" width="800">
       <template v-slot:activator="{ on:dialog }">
@@ -80,7 +80,7 @@
                       ></v-text-field>
                     </v-col>
                     <v-col cols="12" sm="12">
-                      <v-radio-group v-model="row" row>
+                      <v-radio-group v-model="webview" row>
                         <v-radio label="Option 1" value="radio-1"></v-radio>
                         <v-radio label="Option 2" value="radio-2"></v-radio>
                       </v-radio-group>

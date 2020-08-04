@@ -23,29 +23,29 @@ export default {
         {
           icon: "lightbulb_outline",
           text: "Agencias",
-          to: { name: "agencies" }
+          to: { name: "agencies" },
         },
         {
           icon: "lightbulb_outline",
           text: "Menú Persistente",
-          to: { name: "persistantMenu" }
+          to: { name: "persistantMenu" },
         },
         {
           icon: "lightbulb_outline",
           text: "Intenciones",
-          to: { name: "intent" }
+          to: { name: "intent" },
         },
         {
           icon: "mdi-account-edit",
           text: "Usuarios del sistema",
-          to: { name: "auth_users" }
+          to: { name: "auth_users" },
         },
         {
           icon: "mdi-account-edit",
-          text: "Usuarios de CharlyBot",
-          to: { name: "chatbotUsers" }
-        }
-      ]
+          text: "Usuarios de Petro Bot",
+          to: { name: "chatbotUsers" },
+        },
+      ],
     };
   },
   computed: {
@@ -55,9 +55,9 @@ export default {
       },
       set(newValue) {
         this.$store.state.toolbar.drawerIcon = newValue;
-      }
-    }
-  }
+      },
+    },
+  },
 };
 </script>
 

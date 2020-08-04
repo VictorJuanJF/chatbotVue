@@ -497,7 +497,11 @@ async function handleDialogFlowAction(
           } catch (error) {
             await sendTextMessage(
               sender,
-              "Algo salió mal... probablemente ese DNI ya estaba registrado"
+              "El DNI " + newDni + " ya estaba registrado"
+            );
+            sendToDialogFlow(
+              sender,
+              "Usuario.DNI.solicitudActualizacion.actualizacion.action"
             );
             throw error;
           }
