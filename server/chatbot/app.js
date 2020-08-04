@@ -16,6 +16,7 @@ const userService = require("../database/users");
 const { structProtoToJson } = require("./structFunctions");
 //fb service
 const fbService = require("../fbService/fbService");
+const { getDocumentNum } = require("../database/users");
 
 // Messenger API parameters
 if (!process.env.FB_PAGE_TOKEN) {
@@ -180,12 +181,7 @@ async function verifyPrivacyPolicy(senderID) {
 }
 
 async function verifyDocumentNum(senderID) {
-  console.log("se empezara a verificar el dni");
   if (documentNumbers.has(senderID)) {
-    console.log(
-      "el usuario estaba registrado en map y se envio: ",
-      documentNumbers.get(senderID)
-    );
   } else {
     console.log(
       "el usuario no estaba en map dni y se procedio a buscar en la bd"
@@ -217,8 +213,6 @@ function receivedMessage(event) {
   var messageText = message.text;
   var messageAttachments = message.attachments;
   var quickReply = message.quick_reply;
-  console.log("se recibio el mensaje: ", messageText);
-
   if (isEcho) {
     handleEcho(messageId, appId, metadata);
     return;
@@ -512,6 +506,22 @@ async function handleMessage(message, sender) {
       break;
     case "payload":
       let desestructPayload = structProtoToJson(message.payload);
+      let cards = desestructPayload.facebook.attachment.payload.elements;
+      try {
+        for (const card of cards) {
+          for (const button of card.buttons) {
+            if (button.type == "web_url") {
+              if (button.url.includes("{dni}"))
+                button.url = button.url.replace(
+                  "{dni}",
+                  await getDocumentNum(sender)
+                );
+            }
+          }
+        }
+      } catch (error) {
+        console.log(error);
+      }
       var messageData = {
         recipient: {
           id: sender,
@@ -684,6 +694,8 @@ async function sendTextMessage(recipientId, text) {
       .replace("{first_name}", userData.first_name)
       .replace("{last_name}", userData.last_name);
   }
+  if (text.includes("{dni}"))
+    text = text.replace("{dni}", await getDocumentNum(recipientId));
   var messageData = {
     recipient: {
       id: recipientId,

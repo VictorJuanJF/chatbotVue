@@ -24,6 +24,7 @@
 </template>
 
 <script>
+import axios from "axios";
 import { format } from "date-fns";
 export default {
   filters: {
@@ -63,7 +64,7 @@ export default {
           }
         })
         .catch((err) => {
-          console.error(err);
+          // console.error(err);
         });
     },
   },

@@ -128,7 +128,7 @@ export default new Vuex.Store({
             localStorage.removeItem("token");
             localStorage.removeItem("user");
             if (err.response) {
-              console.error(err.response.data);
+              // console.error(err.response.data);
               reject(err);
             }
           });

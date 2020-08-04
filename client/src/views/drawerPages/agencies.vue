@@ -91,6 +91,7 @@
 </template>
 
 <script>
+import axios from "axios";
 export default {
   data() {
     return {
@@ -153,24 +154,23 @@ export default {
         .get("/api/chatbot/agent/agencies/list")
         .then((res) => {
           if (res.data.ok) {
-            console.log(res.data.payload);
+            // console.log(res.data.payload);
             this.agencies = res.data.payload;
             this.getRegions();
           }
         })
         .catch((err) => {
-          console.error(err);
+          // console.error(err);
         });
     },
     getRegions() {
       axios
         .get("/api/regions/list")
         .then((res) => {
-          console.log("las regiones: ", res.data);
           this.regions = res.data.payload;
         })
         .catch((err) => {
-          console.error(err);
+          // console.error(err);
         });
     },
     editItem(item) {
@@ -205,7 +205,7 @@ export default {
             }
           })
           .catch((err) => {
-            console.error(err);
+            // console.error(err);
           });
       }
     },
@@ -268,13 +268,12 @@ export default {
             }
           })
           .catch((err) => {
-            console.error(err);
+            // console.error(err);
           });
       }
     },
   },
 };
-</script>
 </script>
 
 <style lang="scss" scoped>
