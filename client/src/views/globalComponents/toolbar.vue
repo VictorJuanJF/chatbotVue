@@ -1,7 +1,7 @@
 <template>
   <v-app-bar dark app clipped-left color="#1867C0">
     <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
-    <span class="title ml-3 mr-5">Charly Bot</span>
+    <span class="title ml-3 mr-5">Petro Bot</span>
     <v-spacer></v-spacer>
     <v-btn v-if="!$store.state.token" dark outlined :to="{name:'login'}">Iniciar Sesión</v-btn>
     <v-menu v-if="$store.state.token" offset-y>
@@ -29,18 +29,18 @@ export default {
       },
       set(newValue) {
         this.$store.state.toolbar.drawerIcon = newValue;
-      }
+      },
     },
     user() {
       return this.$store.state.user.first_name;
-    }
+    },
   },
   methods: {
     logout() {
       this.$store.dispatch("logout");
       this.$router.push({ name: "login" });
-    }
-  }
+    },
+  },
 };
 </script>
 

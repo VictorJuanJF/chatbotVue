@@ -420,10 +420,6 @@ async function handleDialogFlowAction(
       }
       break;
     case "UsuarioDNI.UsuarioDNI-yes":
-      console.log(
-        "el DNI a guardar es: ",
-        contexts[0].parameters.fields["dni.original"]
-      );
       let dni = contexts[0].parameters.fields["dni.original"].stringValue;
       if (dni.length != 8) {
         sendTextMessage(sender, "El DNI debe contener 8 dígitos");
@@ -441,6 +437,10 @@ async function handleDialogFlowAction(
             sendToDialogFlow(sender, "welcome_intent");
           }, 1000);
         } catch (error) {
+          await sendTextMessage(
+            sender,
+            "Algo salió mal... probablemente ese DNI ya estaba registrado"
+          );
           throw error;
         }
       }
@@ -453,7 +453,7 @@ async function handleDialogFlowAction(
       break;
     case "Get_Started-yes.action":
       try {
-        userService.updatePrivacyPolicyStatus(sender);
+        await userService.updatePrivacyPolicyStatus(sender);
         privacyPolicy.set(sender, true);
         handleMessages(messages, sender);
         setTimeout(() => {
@@ -461,6 +461,49 @@ async function handleDialogFlowAction(
         }, 1000);
       } catch (error) {
         throw error;
+      }
+      break;
+    case "Usuario.DNI.solicitudActualizacion.action":
+      handleMessages(messages, sender);
+      setTimeout(() => {
+        sendToDialogFlow(
+          sender,
+          "Usuario.DNI.solicitudActualizacion.actualizacion"
+        );
+      }, 1000);
+      break;
+    case "Usuario.DNI.solicitudActualizacion.actualizacion.action":
+      console.log(
+        "vinieron estos parametros: ",
+        JSON.stringify(contexts[0], null, " ")
+      );
+      let newDni = contexts[0].parameters.fields["dni.original"].stringValue;
+      if (newDni) {
+        if (newDni.length != 8) {
+          sendTextMessage(sender, "El DNI debe contener 8 dígitos");
+          setTimeout(() => {
+            sendToDialogFlow(
+              sender,
+              "Usuario.DNI.solicitudActualizacion.actualizacion.action"
+            );
+          }, 1000);
+        } else {
+          try {
+            await userService.updateDocumentNum(newDni, sender);
+            //set document num into map
+            documentNumbers.set(sender, newDni);
+            //send responses...
+            handleMessages(messages, sender);
+          } catch (error) {
+            await sendTextMessage(
+              sender,
+              "Algo salió mal... probablemente ese DNI ya estaba registrado"
+            );
+            throw error;
+          }
+        }
+      } else {
+        handleMessages(messages, sender);
       }
       break;
 
@@ -506,19 +549,21 @@ async function handleMessage(message, sender) {
       break;
     case "payload":
       let desestructPayload = structProtoToJson(message.payload);
-      let cards = desestructPayload.facebook.attachment.payload.elements;
+      console.log("recibi este des:", desestructPayload);
       try {
-        for (const card of cards) {
-          for (const button of card.buttons) {
-            if (button.type == "web_url") {
-              if (button.url.includes("{dni}"))
-                button.url = button.url.replace(
-                  "{dni}",
-                  await getDocumentNum(sender)
-                );
+        let cards = desestructPayload.facebook.attachment.payload.elements;
+        if (cards)
+          for (const card of cards) {
+            for (const button of card.buttons) {
+              if (button.type == "web_url") {
+                if (button.url.includes("{dni}"))
+                  button.url = button.url.replace(
+                    "{dni}",
+                    await getDocumentNum(sender)
+                  );
+              }
             }
           }
-        }
       } catch (error) {
         console.log(error);
       }

@@ -1,6 +1,7 @@
 <template>
   <v-container>
     <strong>Rich message de tipo: generic</strong>
+    {{elements}}
     <br />
     <v-dialog v-model="dialog" width="800">
       <template v-slot:activator="{ on:dialog }">
@@ -34,7 +35,7 @@
                     ></v-text-field>
                   </v-row>
                   <v-text-field clearable label="URL de la imagen" v-model="element.image_url"></v-text-field>
-                  <div class="headline">Botones</div>
+                  <div class="ml-2 headline">Botones</div>
                   <v-row
                     class="ml-4"
                     v-for="(button,buttonIndex) in element.buttons"
@@ -56,8 +57,8 @@
                           row
                           v-model="button.type"
                         >
-                          <v-radio label="POSTBACK" value="postback"></v-radio>
-                          <v-radio label="ENLACE WEB" value="web_url"></v-radio>
+                          <v-radio color="primary" label="POSTBACK" value="postback"></v-radio>
+                          <v-radio color="primary" label="ENLACE WEB" value="web_url"></v-radio>
                         </v-radio-group>
                       </v-row>
                     </v-col>
@@ -77,6 +78,12 @@
                         label="Url"
                         v-model="button.url"
                       ></v-text-field>
+                    </v-col>
+                    <v-col cols="12" sm="12">
+                      <v-radio-group v-model="row" row>
+                        <v-radio label="Option 1" value="radio-1"></v-radio>
+                        <v-radio label="Option 2" value="radio-2"></v-radio>
+                      </v-radio-group>
                     </v-col>
                   </v-row>
                   <v-row justify="center">
@@ -144,7 +151,7 @@ export default {
   data() {
     return {
       dialog: false,
-      elements: this.data.facebook.attachment.payload.elements
+      elements: this.data.facebook.attachment.payload.elements,
     };
   },
   methods: {
@@ -159,14 +166,14 @@ export default {
         buttons.splice(buttonIndex, 1, {
           payload: "",
           type: "postback",
-          title: buttons[buttonIndex].title
+          title: buttons[buttonIndex].title,
         });
       }
       if (type == "web_url") {
         buttons.splice(buttonIndex, 1, {
           type: "web_url",
           url: "",
-          title: buttons[buttonIndex].title
+          title: buttons[buttonIndex].title,
         });
       }
     },
@@ -182,26 +189,26 @@ export default {
           {
             payload: "boton 01",
             type: "postback",
-            title: "boton 01"
+            title: "boton 01",
           },
           {
             type: "postback",
             title: "boton 02",
-            payload: "boton 02"
+            payload: "boton 02",
           },
           {
             title: "boton 03",
             payload: "boton 03",
-            type: "postback"
-          }
+            type: "postback",
+          },
         ],
         subtitle: "Contamos con las siguientes opciones",
         image_url:
-          "http://4.bp.blogspot.com/-_QCxfa0Jjv4/U1h7FRoJnAI/AAAAAAAAAYg/lbU-uWs5T-M/s1600/cpa-school-test.png"
+          "http://4.bp.blogspot.com/-_QCxfa0Jjv4/U1h7FRoJnAI/AAAAAAAAAYg/lbU-uWs5T-M/s1600/cpa-school-test.png",
       });
       this.saveGeneric();
-    }
-  }
+    },
+  },
 };
 </script>
 
