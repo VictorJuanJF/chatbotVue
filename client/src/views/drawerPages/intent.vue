@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <h1>Listado de intenciones de Charly Bot</h1>
+    <h1>Listado de intenciones de Petro Bot</h1>
     <v-row justify="center">
       <v-col cols="11">
         <v-text-field label="Buscar intención" v-model="intentToFind"></v-text-field>
@@ -34,7 +34,7 @@ import { extractIntentId } from "../../tools/extractIntentId";
 export default {
   data() {
     return {
-      intentToFind: ""
+      intentToFind: "",
     };
   },
   computed: {
@@ -52,18 +52,18 @@ export default {
       });
     },
     filteredIntents() {
-      return this.intents.filter(intent =>
+      return this.intents.filter((intent) =>
         intent.displayName
           .toLowerCase()
           .includes(this.intentToFind.toLowerCase())
       );
-    }
+    },
   },
   methods: {
     extractIntentId(intentId) {
       return extractIntentId(intentId);
-    }
-  }
+    },
+  },
 };
 </script>
 

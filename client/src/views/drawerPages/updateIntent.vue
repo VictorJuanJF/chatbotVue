@@ -129,7 +129,7 @@
 <script>
 import {
   jsonToStructProto,
-  structProtoToJson
+  structProtoToJson,
 } from "../../tools/structFunctions";
 import generic from "./richMessages/generic";
 import quickReply from "./richMessages/quickReply";
@@ -138,12 +138,12 @@ import {
   messageTemplate,
   genericTemplate,
   quickReplyTemplate,
-  buttonTemplate
+  buttonTemplate,
 } from "../../tools/richMessageTemplates";
 import draggable from "vuedraggable";
 export default {
   components: {
-    draggable
+    draggable,
   },
   data() {
     return {
@@ -151,7 +151,7 @@ export default {
       rerender: false,
       intent: null,
       newTrainingPhrase: "",
-      components: [generic, quickReply, simpleButton]
+      components: [generic, quickReply, simpleButton],
     };
   },
   mounted() {
@@ -207,37 +207,37 @@ export default {
       );
     },
     initialData() {
-      this.intent = this.$store.state.intents.find(intent =>
+      this.intent = this.$store.state.intents.find((intent) =>
         intent.name.includes(this.intentId)
       );
     },
     saveIntent(newIntent) {
       this.$store.dispatch("showOverlay", {
         active: true,
-        text: "Actualizando"
+        text: "Actualizando",
       });
       axios
         .put("/api/chatbot/agent/intents/update", { newIntent })
-        .then(res => {
+        .then((res) => {
           console.log(res);
           if (res.data.ok) {
             this.$store.dispatch("showOverlay", {
               active: false,
-              text: ""
+              text: "",
             });
             this.$store.dispatch("showSnackbar", {
               text: res.data.message,
-              color: "success"
+              color: "success",
             });
           }
         })
-        .catch(err => {
+        .catch((err) => {
           console.error(err);
         })
         .finally(() => {
           this.$store.dispatch("showOverlay", {
             active: false,
-            text: "Actualizando"
+            text: "Actualizando",
           });
         });
     },
@@ -248,12 +248,12 @@ export default {
             text: trainingPhrase,
             entityType: "",
             alias: "",
-            userDefined: false
-          }
+            userDefined: false,
+          },
         ],
         name: "be6f229c-44c2-496f-929d-7f79c7395b9d",
         type: "EXAMPLE",
-        timesAddedCount: 0
+        timesAddedCount: 0,
       });
     },
     deleteTrainingPhrase(index) {
@@ -297,7 +297,7 @@ export default {
         default:
           break;
       }
-    }
+    },
   },
   computed: {
     intentId() {
@@ -305,8 +305,8 @@ export default {
     },
     trainingPhrases() {
       return this.intent.trainingPhrases;
-    }
-  }
+    },
+  },
 };
 </script>
 

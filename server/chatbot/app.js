@@ -286,8 +286,6 @@ async function handleDialogFlowAction(
               let agencies = await agenciesService.listAgenciesByRegion(
                 regionFinded
               );
-
-              console.log("llegaron estas agencias: ", agencies);
               let agenciesByRegion = "";
               agencies.forEach((agency, agencyIndex) => {
                 agenciesByRegion += "AGENCIA " + agency.agency_name;
@@ -553,7 +551,6 @@ async function handleMessage(message, sender) {
       break;
     case "payload":
       let desestructPayload = structProtoToJson(message.payload);
-      console.log("recibi este des:", desestructPayload);
       try {
         let cards = desestructPayload.facebook.attachment.payload.elements;
         if (cards)
@@ -655,31 +652,36 @@ async function handleDialogFlowResponse(sender, response) {
   let parameters = response.parameters;
   let intentName = response.intent.displayName;
   //   check contrato
-  let privacyPolicyStatus = await verifyPrivacyPolicy(sender);
-  if (!isDefined(privacyPolicyStatus)) {
-    console.log("nunca aceptase el contrato prro");
-    if (
-      intentName != "Get_Started" &&
-      intentName != "Get_Started - yes" &&
-      intentName != "Get_Started - no"
-    ) {
-      return sendToDialogFlow(sender, "GET_STARTED.contrato");
-    }
-  }
-  //check dni
-  if (privacyPolicyStatus) {
-    let documentNum = await verifyDocumentNum(sender);
-    if (!isDefined(documentNum)) {
-      if (
-        intentName != "Get_started_dni" &&
-        intentName != "Usuario.DNI" &&
-        intentName != "Usuario.DNI - yes"
-      ) {
-        console.log("no habia dni y se pedira..");
-        return sendToDialogFlow(sender, "GET_STARTED.dni");
-      }
-    }
-  }
+  // let privacyPolicyStatus = await verifyPrivacyPolicy(sender);
+  // if (!isDefined(privacyPolicyStatus)) {
+  //   console.log("nunca aceptase el contrato prro");
+  //   if (
+  //     intentName != "Get_Started" &&
+  //     intentName != "Get_Started - yes" &&
+  //     intentName != "Get_Started - no"
+  //   ) {
+  //     return sendToDialogFlow(sender, "GET_STARTED.contrato");
+  //   }
+  // }
+  // //check dni
+  // if (privacyPolicyStatus) {
+  //   let documentNum = await verifyDocumentNum(sender);
+  //   if (!isDefined(documentNum)) {
+  //     if (
+  //       intentName != "Get_started_dni" &&
+  //       intentName != "Usuario.DNI" &&
+  //       intentName != "Usuario.DNI - yes"
+  //     ) {
+  //       console.log("no habia dni y se pedira..");
+  //       return sendToDialogFlow(sender, "GET_STARTED.dni");
+  //     }
+  //   }
+  // }
+  console.log(
+    "este es el intent: ",
+    intentName,
+    JSON.stringify(messages, null, " ")
+  );
   //end
   if (isDefined(action)) {
     handleDialogFlowAction(sender, action, messages, contexts, parameters);
