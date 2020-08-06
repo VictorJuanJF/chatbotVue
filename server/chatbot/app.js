@@ -652,36 +652,30 @@ async function handleDialogFlowResponse(sender, response) {
   let parameters = response.parameters;
   let intentName = response.intent.displayName;
   //   check contrato
-  // let privacyPolicyStatus = await verifyPrivacyPolicy(sender);
-  // if (!isDefined(privacyPolicyStatus)) {
-  //   console.log("nunca aceptase el contrato prro");
-  //   if (
-  //     intentName != "Get_Started" &&
-  //     intentName != "Get_Started - yes" &&
-  //     intentName != "Get_Started - no"
-  //   ) {
-  //     return sendToDialogFlow(sender, "GET_STARTED.contrato");
-  //   }
-  // }
-  // //check dni
-  // if (privacyPolicyStatus) {
-  //   let documentNum = await verifyDocumentNum(sender);
-  //   if (!isDefined(documentNum)) {
-  //     if (
-  //       intentName != "Get_started_dni" &&
-  //       intentName != "Usuario.DNI" &&
-  //       intentName != "Usuario.DNI - yes"
-  //     ) {
-  //       console.log("no habia dni y se pedira..");
-  //       return sendToDialogFlow(sender, "GET_STARTED.dni");
-  //     }
-  //   }
-  // }
-  console.log(
-    "este es el intent: ",
-    intentName,
-    JSON.stringify(messages, null, " ")
-  );
+  let privacyPolicyStatus = await verifyPrivacyPolicy(sender);
+  if (!isDefined(privacyPolicyStatus)) {
+    if (
+      intentName != "Get_Started" &&
+      intentName != "Get_Started - yes" &&
+      intentName != "Get_Started - no"
+    ) {
+      return sendToDialogFlow(sender, "GET_STARTED.contrato");
+    }
+  }
+  //check dni
+  if (privacyPolicyStatus) {
+    let documentNum = await verifyDocumentNum(sender);
+    if (!isDefined(documentNum)) {
+      if (
+        intentName != "Get_started_dni" &&
+        intentName != "Usuario.DNI" &&
+        intentName != "Usuario.DNI - yes"
+      ) {
+        console.log("no habia dni y se pedira..");
+        return sendToDialogFlow(sender, "GET_STARTED.dni");
+      }
+    }
+  }
   //end
   if (isDefined(action)) {
     handleDialogFlowAction(sender, action, messages, contexts, parameters);
@@ -691,7 +685,7 @@ async function handleDialogFlowResponse(sender, response) {
     //dialogflow could not evaluate input.
     sendTextMessage(
       sender,
-      "I'm not sure what you want. Can you be more specific? gaa"
+      "I'm not sure what you want. Can you be more specific?"
     );
   } else if (isDefined(responseText)) {
     sendTextMessage(sender, responseText);
