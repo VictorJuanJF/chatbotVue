@@ -381,6 +381,8 @@ router.put("/agencies/update", async (req, res) => {
     region: body.region,
     schedule: body.schedule,
     synonyms: body.synonyms,
+    url: body.url,
+    image: body.image,
   };
   try {
     res.status(200).json({

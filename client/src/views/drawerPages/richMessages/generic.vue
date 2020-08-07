@@ -1,5 +1,6 @@
 <template>
   <v-container>
+    {{elements.length}}
     <strong>Rich message de tipo: generic</strong>
     <!-- {{elements}} -->
     <br />
@@ -150,6 +151,7 @@ export default {
   name: "generic",
   data() {
     return {
+      webview: null,
       dialog: false,
       elements: this.data.facebook.attachment.payload.elements,
     };
@@ -179,6 +181,7 @@ export default {
     },
     saveGeneric() {
       let newData = this.data;
+      console.log("se guardara esta data: ", newData.length);
       newData.facebook.attachment.payload.elements = this.elements;
       this.$emit("onSaveGeneric", newData, this.index);
     },

@@ -21,7 +21,7 @@ const getAgency = (agencyName) => {
 const listAgencies = () => {
   return new Promise((resolve, reject) => {
     db.query(
-      "select agencias.id as agency_id,agencias.nombre as agency_name,region,horario as schedule,direccion as address,referencia as reference,regiones.nombre as name,sinonimos as synonyms from agencias inner join regiones on agencias.region=regiones.id where agencias.estado='1' ORDER BY regiones.nombre ASC",
+      "select agencias.id as agency_id,agencias.nombre as agency_name,region,horario as schedule,direccion as address,referencia as reference,regiones.nombre as name,sinonimos as synonyms,agencias.url,agencias.imagen as image from agencias inner join regiones on agencias.region=regiones.id where agencias.estado='1' ORDER BY regiones.nombre ASC",
       (err, res) => {
         if (err) {
           console.log(err);
@@ -36,13 +36,15 @@ const listAgencies = () => {
 const createAgency = (agency) => {
   return new Promise((resolve, reject) => {
     db.query(
-      "insert into agencias (nombre,region,horario,direccion,referencia,sinonimos,estado) values($1,$2,$3,$4,$5,$6,$7);",
+      "insert into agencias (nombre,region,horario,direccion,referencia,url,imagen,sinonimos,estado) values($1,$2,$3,$4,$5,$6,$7,$8,$9);",
       [
         agency.agency_name,
         agency.region,
         agency.schedule,
         agency.address,
         agency.reference,
+        agency.url,
+        agency.image,
         agency.synonyms,
         agency.status,
       ],
@@ -59,7 +61,7 @@ const createAgency = (agency) => {
 const updateAgency = (id, agency) => {
   return new Promise((resolve, reject) => {
     db.query(
-      `update agencias set direccion='${agency.address}',nombre='${agency.agency_name}',referencia='${agency.reference}',region='${agency.region}',horario='${agency.schedule}',sinonimos='${agency.synonyms}' where id='${id}'`,
+      `update agencias set direccion='${agency.address}',nombre='${agency.agency_name}',referencia='${agency.reference}',region='${agency.region}',horario='${agency.schedule}',sinonimos='${agency.synonyms}',imagen='${agency.image}',url='${agency.url}' where id='${id}'`,
       (err, res) => {
         if (err) {
           console.log(err);

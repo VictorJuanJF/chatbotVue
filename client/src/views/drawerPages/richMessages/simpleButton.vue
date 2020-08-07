@@ -16,7 +16,7 @@
           <v-toolbar-title>Editar mensaje de tipo botón</v-toolbar-title>
         </v-toolbar>
         <v-container>
-          <v-text-field v-model="buttons.text" label="Mensaje que acompaña al botón (Obligatorio)"></v-text-field>
+          <v-textarea v-model="buttons.text" label="Mensaje que acompaña al botón (Obligatorio)"></v-textarea>
           <v-row align="center">
             <v-col cols="12" sm="6">
               <v-col cols="12" v-for="(button,i) in buttons.buttons" :key="i">
@@ -37,7 +37,7 @@
             <v-col cols="12" sm="6">
               <v-card class="pa-5" outlined>
                 <strong>Vista previa del rich message</strong>
-                <p>{{buttons.text}}</p>
+                <pre>{{buttons.text}}</pre>
                 <v-btn
                   block
                   outlined
@@ -61,7 +61,7 @@
       <v-col sm="4">
         <v-card class="pa-5" outlined>
           <strong>Vista previa del rich message</strong>
-          <p>{{buttons.text}}</p>
+          <pre>{{buttons.text}}</pre>
           <v-btn
             block
             outlined
@@ -81,7 +81,7 @@ export default {
   data() {
     return {
       dialog: false,
-      buttons: this.data.facebook.attachment.payload
+      buttons: this.data.facebook.attachment.payload,
     };
   },
   methods: {
@@ -90,15 +90,15 @@ export default {
         type: "web_url",
         url:
           "https://developers.facebook.com/docs/messenger-platform/send-messages/template/list",
-        title: "Ejemplo"
+        title: "Ejemplo",
       });
     },
     saveButton() {
       let newData = this.data;
       newData.facebook.attachment.payload = this.buttons;
       this.$emit("onSaveButton", newData, this.index);
-    }
-  }
+    },
+  },
 };
 </script>
 

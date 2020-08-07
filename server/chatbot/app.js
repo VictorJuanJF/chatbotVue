@@ -13,7 +13,7 @@ const agenciesService = require("../database/agencies");
 const userService = require("../database/users");
 // Facebook me da payloads (botones,carrusel,etc) en protocolo struct, con la libreria
 //de abajo puedo desestructuarlo y mandarlo a graph api
-const { structProtoToJson } = require("./structFunctions");
+const { structProtoToJson, jsonToStructProto } = require("./structFunctions");
 //fb service
 const fbService = require("../fbService/fbService");
 const { getDocumentNum } = require("../database/users");
@@ -263,14 +263,15 @@ async function handleDialogFlowAction(
   contexts,
   parameters
 ) {
+  let dynamicResponseIndex;
   let dynamicResponse = "";
   let agencyName = null;
   //looking for $any parameter // because of it represents agencie name (cmac)
   if (parameters.fields.hasOwnProperty("any")) {
     agencyName = parameters.fields.any.stringValue;
-    dynamicResponseIndex = messages.findIndex((message) =>
-      message.text.text[0].includes(agencyName)
-    );
+    // dynamicResponseIndex = messages.findIndex((message) =>
+    //   message.text.text[0].includes(agencyName)
+    // );
   }
   switch (action) {
     case "Agencia.listado.region.action": {
@@ -316,97 +317,80 @@ async function handleDialogFlowAction(
     }
     case "horario.action":
       if (agencyName) {
-        agenciesService.listAgencies((err, agencies) => {
-          if (err) {
-            console.log(
-              "algo salio mal en la llamada a la base de datos: ",
-              err
-            );
-          } else {
-            var agenciesDictionary = [];
-            agencies.forEach((strg) => {
-              agenciesDictionary.push({
-                value: strg.agency_name,
-                synonym: [strg.agency_name],
-              });
+        try {
+          let agencies = await agenciesService.listAgencies();
+          let agenciesDictionary = [];
+          agencies.forEach((strg) => {
+            agenciesDictionary.push({
+              value: strg.agency_name,
+              synonym: [strg.agency_name],
             });
-            levenshtainService.compareStrings(
-              agencyName,
-              agenciesDictionary,
-              (agency) => {
-                if (agency) {
-                  var agency = agencies.find(
-                    (agencie) => agencie.agency_name == agency
-                  );
-                  for (let index = 0; index < messages.length; index++) {
-                    const message = messages[index];
-                    dynamicResponse = message.text.text[0]
-                      .replace(agencyName, agency.agency_name)
-                      .replace("$direccion", agency.address)
-                      .replace("$horario", agency.schedule);
-                    messages[index].text.text[0] = dynamicResponse;
+          });
+          levenshtainService.compareStrings(
+            agencyName,
+            agenciesDictionary,
+            (agencyName) => {
+              if (agencyName) {
+                let agency = agencies.find(
+                  (agencie) => agencie.agency_name == agencyName
+                );
+                for (let index = 0; index < messages.length; index++) {
+                  if (messages[index].hasOwnProperty("payload")) {
+                    messages[index] = buildAgencyCard(messages[index], agency);
                   }
-                  handleMessages(messages, sender);
-                } else {
-                  console.log(
-                    "como el valor es menor a 0.6 se entro al mensaje de rechazo"
-                  );
-                  sendToDialogFlow(sender, "Agencia.horario.fallback");
                 }
+                handleMessages(messages, sender);
+              } else {
+                sendToDialogFlow(sender, "Agencia.ubicacion.fallback");
               }
-            );
-          }
-        });
+            }
+          );
+        } catch (error) {
+          console.log(error);
+        }
       } else {
         console.log(
           "Por favor, define el parametro $any (nombre de la agencia)"
         );
         sendTextMessage(
           sender,
-          "Aún no me enseñaron sobre los horarios de las agencias"
+          "Aún no me enseñaron sobre las ubicaciones de las agencias"
         );
       }
       break;
     case "agencia.ubicacion.action":
       if (agencyName) {
-        agenciesService.listAgencies((err, agencies) => {
-          if (err) {
-            console.log(
-              "algo salio mal en la llamada a la base de datos: ",
-              err
-            );
-          } else {
-            var agenciesDictionary = [];
-            agencies.forEach((strg) => {
-              agenciesDictionary.push({
-                value: strg.agency_name,
-                synonym: [strg.agency_name],
-              });
+        try {
+          let agencies = await agenciesService.listAgencies();
+          let agenciesDictionary = [];
+          agencies.forEach((strg) => {
+            agenciesDictionary.push({
+              value: strg.agency_name,
+              synonym: [strg.agency_name],
             });
-            levenshtainService.compareStrings(
-              agencyName,
-              agenciesDictionary,
-              (agency) => {
-                if (agency) {
-                  var agency = agencies.find(
-                    (agencie) => agencie.agency_name == agency
-                  );
-                  for (let index = 0; index < messages.length; index++) {
-                    const message = messages[index];
-                    dynamicResponse = message.text.text[0]
-                      .replace(agencyName, agency.agency_name)
-                      .replace("$direccion", agency.address)
-                      .replace("$horario", agency.schedule);
-                    messages[index].text.text[0] = dynamicResponse;
+          });
+          levenshtainService.compareStrings(
+            agencyName,
+            agenciesDictionary,
+            (agencyName) => {
+              if (agencyName) {
+                let agency = agencies.find(
+                  (agencie) => agencie.agency_name == agencyName
+                );
+                for (let index = 0; index < messages.length; index++) {
+                  if (messages[index].hasOwnProperty("payload")) {
+                    messages[index] = buildAgencyCard(messages[index], agency);
                   }
-                  handleMessages(messages, sender);
-                } else {
-                  sendToDialogFlow(sender, "Agencia.ubicacion.fallback");
                 }
+                handleMessages(messages, sender);
+              } else {
+                sendToDialogFlow(sender, "Agencia.ubicacion.fallback");
               }
-            );
-          }
-        });
+            }
+          );
+        } catch (error) {
+          console.log(error);
+        }
       } else {
         console.log(
           "Por favor, define el parametro $any (nombre de la agencia)"
@@ -515,6 +499,62 @@ async function handleDialogFlowAction(
   }
 }
 
+function buildAgencyCard(message, agencyData) {
+  let payload = structProtoToJson(message.payload);
+  //generic message (image + title)
+  if (payload.facebook.attachment.payload.template_type === "generic") {
+    let image = payload.facebook.attachment.payload.elements[0].image_url;
+    let title = payload.facebook.attachment.payload.elements[0].title;
+    let subtitle = payload.facebook.attachment.payload.elements[0].subtitle;
+    if (image.includes("{agencia_imagen}")) {
+      payload.facebook.attachment.payload.elements[0].image_url = image.replace(
+        "{agencia_imagen}",
+        agencyData.image
+      );
+    }
+    if (title.includes("{agencia_nombre}")) {
+      payload.facebook.attachment.payload.elements[0].title = title.replace(
+        "{agencia_nombre}",
+        agencyData.agency_name
+      );
+    }
+    if (subtitle) {
+      if (
+        subtitle.includes("{agencia_direccion}") ||
+        subtitle.includes("{agencia_horarios}")
+      ) {
+        payload.facebook.attachment.payload.elements[0].subtitle = subtitle
+          .replace("{agencia_direccion}", agencyData.address)
+          .replace("agencia_horarios", agencyData.schedule);
+      }
+    }
+  }
+  //button message (horario + direcion + boton)
+  if (payload.facebook.attachment.payload.template_type === "button") {
+    let button = payload.facebook.attachment.payload;
+    if (
+      button.text.includes("{agencia_direccion}") ||
+      button.text.includes("{agencia_horarios}")
+    ) {
+      button.text = button.text
+        .replace("{agencia_direccion}", agencyData.address)
+        .replace("{agencia_horarios}", agencyData.schedule);
+    }
+    for (const buttonElement of button.buttons) {
+      if (buttonElement.hasOwnProperty("url")) {
+        if (buttonElement.url.includes("{agencia_url}")) {
+          buttonElement.url = buttonElement.url.replace(
+            "{agencia_url}",
+            agencyData.url
+          );
+        }
+      }
+    }
+  }
+  message.payload = jsonToStructProto(payload);
+  return message;
+}
+
 function convertToTextMessage(text) {
   return {
     platform: "PLATFORM_UNSPECIFIED",
@@ -551,6 +591,16 @@ async function handleMessage(message, sender) {
       break;
     case "payload":
       let desestructPayload = structProtoToJson(message.payload);
+      let richElement = desestructPayload.facebook.attachment.payload;
+      // console.log("el rich element: ", richElement);
+      //check if generic has no buttons
+      if (richElement.template_type === "generic") {
+        for (const card of richElement.elements) {
+          if (card.buttons.length === 0) delete card["buttons"];
+          if (!card.subtitle) delete card["subtitle"];
+        }
+        console.log("el carrusel: ", richElement);
+      }
       try {
         let cards = desestructPayload.facebook.attachment.payload.elements;
         if (cards)
@@ -756,7 +806,7 @@ async function sendTextMessage(recipientId, text) {
  * Send an image using the Send API.
  *
  */
-function sendImageMessage(recipientId, imageUrl) {
+async function sendImageMessage(recipientId, imageUrl) {
   var messageData = {
     recipient: {
       id: recipientId,
@@ -771,7 +821,7 @@ function sendImageMessage(recipientId, imageUrl) {
     },
   };
 
-  callSendAPI(messageData);
+  await callSendAPI(messageData);
 }
 
 /*
@@ -866,7 +916,7 @@ function sendFileMessage(recipientId, fileName) {
  * Send a button message using the Send API.
  *
  */
-function sendButtonMessage(recipientId, text, buttons) {
+async function sendButtonMessage(recipientId, text, buttons) {
   var messageData = {
     recipient: {
       id: recipientId,
@@ -882,11 +932,10 @@ function sendButtonMessage(recipientId, text, buttons) {
       },
     },
   };
-
-  callSendAPI(messageData);
+  await callSendAPI(messageData);
 }
 
-function sendGenericMessage(recipientId, elements) {
+async function sendGenericMessage(recipientId, elements) {
   var messageData = {
     recipient: {
       id: recipientId,
@@ -901,8 +950,7 @@ function sendGenericMessage(recipientId, elements) {
       },
     },
   };
-
-  callSendAPI(messageData);
+  await callSendAPI(messageData);
 }
 
 function sendReceiptMessage(
@@ -1046,43 +1094,46 @@ function sendAccountLinking(recipientId) {
  *
  */
 async function callSendAPI(messageData) {
-  let sender = messageData.recipient.id;
-  request(
-    {
-      uri: "https://graph.facebook.com/v3.2/me/messages",
-      qs: {
-        access_token: process.env.FB_PAGE_TOKEN,
+  return new Promise((resolve, reject) => {
+    request(
+      {
+        uri: "https://graph.facebook.com/v3.2/me/messages",
+        qs: {
+          access_token: process.env.FB_PAGE_TOKEN,
+        },
+        method: "POST",
+        json: messageData,
       },
-      method: "POST",
-      json: messageData,
-    },
-    function (error, response, body) {
-      if (!error && response.statusCode == 200) {
-        var recipientId = body.recipient_id;
-        var messageId = body.message_id;
+      function (error, response, body) {
+        if (!error && response.statusCode == 200) {
+          var recipientId = body.recipient_id;
+          var messageId = body.message_id;
 
-        if (messageId) {
-          console.log(
-            "Successfully sent message with id %s to recipient %s",
-            messageId,
-            recipientId
-          );
+          if (messageId) {
+            console.log(
+              "Successfully sent message with id %s to recipient %s",
+              messageId,
+              recipientId
+            );
+          } else {
+            console.log(
+              "Successfully called Send API for recipient %s",
+              recipientId
+            );
+          }
+          resolve();
         } else {
-          console.log(
-            "Successfully called Send API for recipient %s",
-            recipientId
+          console.error(
+            "Failed calling Send API",
+            response.statusCode,
+            response.statusMessage,
+            body.error
           );
+          reject();
         }
-      } else {
-        console.error(
-          "Failed calling Send API",
-          response.statusCode,
-          response.statusMessage,
-          body.error
-        );
       }
-    }
-  );
+    );
+  });
 }
 
 /*

@@ -216,6 +216,10 @@ export default {
         active: true,
         text: "Actualizando",
       });
+      console.log(
+        "se lanzará esto: ",
+        structProtoToJson(newIntent.messages[0].payload)
+      );
       axios
         .put("/api/chatbot/agent/intents/update", { newIntent })
         .then((res) => {
@@ -264,7 +268,6 @@ export default {
         "se actualizara el generic que cuenta con es: ",
         this.structProtoToJson(this.intent.messages[index].payload)
       );
-      console.log("a esto: ", data);
       this.intent.messages[index].payload = this.jsonToStructProto(data);
     },
     saveButton(data, index) {

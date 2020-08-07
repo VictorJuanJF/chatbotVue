@@ -30,6 +30,7 @@
               </v-card-title>
               <v-card-text>
                 <v-container>
+                  <h1>Hola</h1>
                   <v-row>
                     <v-col cols="12" sm="6" md="6">
                       <v-text-field v-model="editedItem.agency_name" label="Nombre"></v-text-field>
@@ -51,6 +52,12 @@
                     </v-col>
                     <v-col cols="12" sm="12" md="12">
                       <v-text-field v-model="editedItem.schedule" label="Horarios"></v-text-field>
+                    </v-col>
+                    <v-col cols="12" sm="12" md="12">
+                      <v-text-field v-model="editedItem.url" label="URL para más información"></v-text-field>
+                    </v-col>
+                    <v-col cols="12" sm="12" md="12">
+                      <v-text-field v-model="editedItem.image" label="URL de imagen"></v-text-field>
                     </v-col>
                     <v-col cols="12" sm="6">
                       <v-text-field
@@ -75,12 +82,8 @@
           </v-dialog>
         </v-toolbar>
       </template>
-      <template v-slot:item.estado_politicas_privacidad="{item}">
-        <v-chip v-if="item.estado_politicas_privacidad" color="success">Aceptó</v-chip>
-        <v-chip v-else color="error">No aceptó</v-chip>
-      </template>
-      <template v-slot:item.hoja_informativa="{item}">
-        <p v-if="!item.hoja_informativa">Por definir</p>
+      <template v-slot:item.image="{item}">
+        <v-img :src="item.image" aspect-ratio="1" contain></v-img>
       </template>
       <template v-slot:item.action="{ item }">
         <v-icon color="primary" small class="mr-2" @click="editItem(item)">edit</v-icon>
@@ -100,6 +103,11 @@ export default {
       search: "",
       dialog: false,
       headers: [
+        {
+          text: "Imagen",
+          align: "left",
+          value: "image",
+        },
         {
           text: "Nombre",
           align: "left",
@@ -124,6 +132,8 @@ export default {
         region: "",
         schedule: "",
         synonyms: [],
+        url: "",
+        image: "",
       },
       defaultItem: {
         agency_id: 0,
@@ -133,6 +143,8 @@ export default {
         region: "",
         schedule: "",
         synonyms: [],
+        url: "",
+        image: "",
       },
     };
   },
@@ -229,6 +241,8 @@ export default {
             reference: this.editedItem.reference,
             region: this.editedItem.region,
             schedule: this.editedItem.schedule,
+            image: this.editedItem.image,
+            url: this.editedItem.url,
             synonyms: this.editedItem.synonyms,
           })
           .then((res) => {
@@ -252,6 +266,8 @@ export default {
               agency_name: this.editedItem.agency_name,
               reference: this.editedItem.reference,
               region: this.editedItem.region,
+              image: this.editedItem.image,
+              url: this.editedItem.url,
               schedule: this.editedItem.schedule,
               status: 1,
               synonyms: this.editedItem.synonyms.join(","),
