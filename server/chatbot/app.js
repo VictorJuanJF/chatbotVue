@@ -274,8 +274,8 @@ async function handleDialogFlowAction(
     // );
   }
   switch (action) {
-    case "Agencia.listado.region.action": {
-      let region = parameters.fields.regions.stringValue;
+    case "Menu.agencias.ciudad.action": {
+      let region = parameters.fields.nombre_ciudad.stringValue;
       let regionsDictionary = require("../Algorithms/regionsDictionary")
         .entries;
       levenshtainService.compareStrings(
@@ -287,22 +287,68 @@ async function handleDialogFlowAction(
               let agencies = await agenciesService.listAgenciesByRegion(
                 regionFinded
               );
-              let agenciesByRegion = "";
-              agencies.forEach((agency, agencyIndex) => {
-                agenciesByRegion += "AGENCIA " + agency.agency_name;
-                if (agencyIndex < agencies.length - 1) {
-                  agenciesByRegion +=
-                    agencyIndex == agencies.length - 2 ? " y " : " ,";
-                }
-              });
-              console.log("las agencias: ", agenciesByRegion);
               for (let index = 0; index < messages.length; index++) {
-                const message = messages[index];
-                dynamicResponse = message.text.text[0]
-                  .replace(region, regionFinded)
-                  .replace("$agencias", agenciesByRegion);
-                messages[index].text.text[0] = dynamicResponse;
+                if (messages[index].hasOwnProperty("payload")) {
+                  // console.log(
+                  //   "este es el formato: ",
+                  //   JSON.stringify(
+                  //     structProtoToJson(messages[index].payload),
+                  //     null,
+                  //     " "
+                  //   )
+                  // );
+                  let desestructed = structProtoToJson(messages[index].payload);
+                  let generics =
+                    desestructed.facebook.attachment.payload.elements;
+                  let genericFormat = JSON.parse(JSON.stringify(generics[0]));
+                  generics = [];
+                  for (const agency of agencies) {
+                    let genericFormatWithData = JSON.parse(
+                      JSON.stringify(genericFormat)
+                    );
+                    genericFormatWithData.image_url = agency.image;
+                    genericFormatWithData.title = genericFormatWithData.title.replace(
+                      "{agencia_nombre}",
+                      agency.agency_name
+                    );
+                    //card buttons
+                    for (const button of genericFormatWithData.buttons) {
+                      if (button.hasOwnProperty("url")) {
+                        button.url = button.url.replace(
+                          "{agencia_url}",
+                          agency.url
+                        );
+                      } else {
+                        button.payload = button.payload.replace(
+                          "{agencia_nombre}",
+                          agency.agency_name
+                        );
+                      }
+                    }
+                    generics.push(genericFormatWithData);
+                  }
+                  desestructed.facebook.attachment.payload.elements = generics;
+                  //struct
+                  messages[index].payload = jsonToStructProto(desestructed);
+                }
               }
+              // console.log("las agencias: ", agencies);
+              // let agenciesByRegion = "";
+              // agencies.forEach((agency, agencyIndex) => {
+              //   agenciesByRegion += "AGENCIA " + agency.agency_name;
+              //   if (agencyIndex < agencies.length - 1) {
+              //     agenciesByRegion +=
+              //       agencyIndex == agencies.length - 2 ? " y " : " ,";
+              //   }
+              // });
+              // console.log("las agencias: ", agenciesByRegion);
+              // for (let index = 0; index < messages.length; index++) {
+              //   const message = messages[index];
+              //   dynamicResponse = message.text.text[0]
+              //     .replace(region, regionFinded)
+              //     .replace("$agencias", agenciesByRegion);
+              //   messages[index].text.text[0] = dynamicResponse;
+              // }
               handleMessages(messages, sender);
             } catch (error) {
               console.log(error);
@@ -591,27 +637,33 @@ async function handleMessage(message, sender) {
       break;
     case "payload":
       let desestructPayload = structProtoToJson(message.payload);
+      // console.log(
+      //   "el rich element: ",
+      //   JSON.stringify(desestructPayload, null, " ")
+      // );
       let richElement = desestructPayload.facebook.attachment.payload;
-      // console.log("el rich element: ", richElement);
+
       //check if generic has no buttons
       if (richElement.template_type === "generic") {
         for (const card of richElement.elements) {
           if (card.buttons.length === 0) delete card["buttons"];
           if (!card.subtitle) delete card["subtitle"];
         }
-        console.log("el carrusel: ", richElement);
+        // console.log("el carrusel: ", richElement);
       }
       try {
         let cards = desestructPayload.facebook.attachment.payload.elements;
         if (cards)
           for (const card of cards) {
-            for (const button of card.buttons) {
-              if (button.type == "web_url") {
-                if (button.url.includes("{dni}"))
-                  button.url = button.url.replace(
-                    "{dni}",
-                    await getDocumentNum(sender)
-                  );
+            if (card.buttons) {
+              for (const button of card.buttons) {
+                if (button.type == "web_url") {
+                  if (button.url.includes("{dni}"))
+                    button.url = button.url.replace(
+                      "{dni}",
+                      await getDocumentNum(sender)
+                    );
+                }
               }
             }
           }
@@ -727,6 +779,7 @@ async function handleDialogFlowResponse(sender, response) {
     }
   }
   //end
+  console.log("nombre del intent: ", intentName);
   if (isDefined(action)) {
     handleDialogFlowAction(sender, action, messages, contexts, parameters);
   } else if (isDefined(messages)) {

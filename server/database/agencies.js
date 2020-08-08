@@ -88,7 +88,7 @@ const deleteAgency = (id) => {
 const listAgenciesByRegion = (region) => {
   return new Promise((resolve, reject) => {
     db.query(
-      `select agencias.nombre as agency_name,direccion as address from agencias inner join regiones on agencias.region=regiones.id where regiones.nombre='${region}'`,
+      `select agencias.nombre as agency_name,direccion as address,agencias.url,agencias.imagen as image from agencias inner join regiones on agencias.region=regiones.id where regiones.nombre='${region}'`,
       (err, res) => {
         if (err) {
           console.log(err);

@@ -1,6 +1,5 @@
 <template>
   <v-container>
-    {{elements.length}}
     <strong>Rich message de tipo: generic</strong>
     <!-- {{elements}} -->
     <br />
@@ -80,12 +79,12 @@
                         v-model="button.url"
                       ></v-text-field>
                     </v-col>
-                    <v-col cols="12" sm="12">
+                    <!-- <v-col cols="12" sm="12">
                       <v-radio-group v-model="webview" row>
                         <v-radio label="Option 1" value="radio-1"></v-radio>
                         <v-radio label="Option 2" value="radio-2"></v-radio>
                       </v-radio-group>
-                    </v-col>
+                    </v-col>-->
                   </v-row>
                   <v-row justify="center">
                     <v-col sm="4">
